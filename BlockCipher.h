@@ -29,7 +29,9 @@ uint8_t* AES_192_Encrypt(uint8_t* key, uint8_t* data);
 uint8_t* AES_192_Decrypt(uint8_t* key, uint8_t* data);
 uint8_t* AES_256_Encrypt(uint8_t* key, uint8_t* data);
 uint8_t* AES_256_Decrypt(uint8_t* key, uint8_t* data);
-
+int ARIA_128init(uint8_t* key, int len, Byte* rk, int flag);
+int ARIA_192init(uint8_t* key, int len, Byte* rk, int flag);
+int ARIA_256init(uint8_t* key, int len, Byte* rk, int flag);
 uint8_t* ARIA_128_Encrypt(uint8_t* key, uint8_t* data);
 uint8_t* ARIA_128_Decrypt(uint8_t* key, uint8_t* data);
 uint8_t* ARIA_192_Encrypt(uint8_t* key, uint8_t* data);
@@ -44,6 +46,3 @@ uint8_t* LEA_192_Decrypt(uint8_t* key, uint8_t* data);
 uint8_t* LEA_256_Encrypt(uint8_t* key, uint8_t* data);
 uint8_t* LEA_256_Decrypt(uint8_t* key, uint8_t* data);
 
-
-void ARIA_test();
-void LEA_test();

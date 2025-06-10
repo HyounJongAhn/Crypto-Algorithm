@@ -6,7 +6,7 @@ uint8_t* AES_128_Encrypt(uint8_t* key, uint8_t* data)
 	AES_init(&aes, key, 16);  
 	uint8_t* ct = (uint8_t*)malloc(blockBytesLen);  
 
-	AES_encrypt(&aes, ct, data);  
+	AES_encrypt(&aes, ct, data, 1);  
 
 	uint8_t* result = (uint8_t*)malloc(BLOCK_SIZE);
 	memcpy(result, ct, BLOCK_SIZE);
@@ -21,7 +21,7 @@ uint8_t* AES_128_Decrypt(uint8_t* key, uint8_t* data)
 	AES_init(&aes, key, 16); 
 	uint8_t* pt = (uint8_t*)malloc(blockBytesLen);  
 
-	AES_decrypt(&aes, pt, data);  
+	AES_decrypt(&aes, pt, data, 1);
 
 	uint8_t* result = (uint8_t*)malloc(BLOCK_SIZE);
 	memcpy(result, pt, BLOCK_SIZE);
@@ -34,7 +34,7 @@ uint8_t* AES_192_Encrypt(uint8_t* key, uint8_t* data)
 	AES_init(&aes, key, 24); 
 	uint8_t* ct = (uint8_t*)malloc(blockBytesLen);  
 
-	AES_encrypt(&aes, ct, data); 
+	AES_encrypt(&aes, ct, data, 1);
 
 	uint8_t* result = (uint8_t*)malloc(BLOCK_SIZE);
 	memcpy(result, ct, BLOCK_SIZE);
@@ -48,7 +48,7 @@ uint8_t* AES_192_Decrypt(uint8_t* key, uint8_t* data)
 	AES_init(&aes, key, 24); 
 	uint8_t* pt = (uint8_t*)malloc(blockBytesLen); 
 
-	AES_decrypt(&aes, pt, data);  
+	AES_decrypt(&aes, pt, data, 1);
 
 	uint8_t* result = (uint8_t*)malloc(BLOCK_SIZE);
 	memcpy(result, pt, BLOCK_SIZE);
@@ -63,7 +63,7 @@ uint8_t* AES_256_Encrypt(uint8_t* key, uint8_t* data)
 	AES_init(&aes, key, 32);  
 	uint8_t* ct = (uint8_t*)malloc(blockBytesLen); 
 
-	AES_encrypt(&aes, ct, data);  
+	AES_encrypt(&aes, ct, data, 1);
 
 	uint8_t* result = (uint8_t*)malloc(BLOCK_SIZE);
 	memcpy(result, ct, BLOCK_SIZE);
@@ -78,7 +78,7 @@ uint8_t* AES_256_Decrypt(uint8_t* key, uint8_t* data)
 	AES_init(&aes, key, 32);  
 	uint8_t* pt = (uint8_t*)malloc(blockBytesLen);  
 
-	AES_decrypt(&aes, pt, data);  
+	AES_decrypt(&aes, pt, data, 1);
 
 	uint8_t* result = (uint8_t*)malloc(BLOCK_SIZE);
 	memcpy(result, pt, BLOCK_SIZE);
@@ -89,6 +89,48 @@ uint8_t* AES_256_Decrypt(uint8_t* key, uint8_t* data)
 
 
 // ARIA	
+int ARIA_128init(uint8_t* key, int len, Byte* rk, int flag) {
+	Byte mk[16];
+	memset(mk, 0, sizeof(mk));
+	memcpy(mk, key, 16);
+	int R;
+	if (flag == 1) {
+		R = EncKeySetup(mk, rk, len);
+	}
+	else {
+		R = DecKeySetup(mk, rk, len);
+	}
+	
+	return R;
+}
+int ARIA_192init(uint8_t* key, int len, Byte* rk, int flag) {
+	Byte mk[24];
+	memset(mk, 0, sizeof(mk));
+	memcpy(mk, key, 24);
+	int R;
+	if (flag == 1) {
+		R = EncKeySetup(mk, rk, len);
+	}
+	else {
+		R = DecKeySetup(mk, rk, len);
+	}
+
+	return R;
+}
+int ARIA_256init(uint8_t* key, int len, Byte* rk, int flag) {
+	Byte mk[32];
+	memset(mk, 0, sizeof(mk));
+	memcpy(mk, key, 32);
+	int R;
+	if (flag == 1) {
+		R = EncKeySetup(mk, rk, len);
+	}
+	else {
+		R = DecKeySetup(mk, rk, len);
+	}
+
+	return R;
+}
 uint8_t* ARIA_128_Encrypt(uint8_t* key, uint8_t* data)
 {
 	Byte mk[16];
@@ -96,9 +138,10 @@ uint8_t* ARIA_128_Encrypt(uint8_t* key, uint8_t* data)
 	memcpy(mk, key, 16);
 	Byte rk[16 * 17];
 
+	int R = EncKeySetup(mk, rk, 128);
 	Byte *p = data;
 	Byte c[BLOCK_SIZE];
-	Crypt(p, EncKeySetup(mk, rk, 128), rk, c);
+	Crypt(p, R, rk, c);
 
 	uint8_t* result = (uint8_t*)malloc(BLOCK_SIZE);
 	memcpy(result, c, BLOCK_SIZE);

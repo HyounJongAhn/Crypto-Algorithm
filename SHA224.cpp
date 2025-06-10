@@ -143,7 +143,7 @@ void SHA224_HMAC_Final(SHA224_CTX* ctx, const void* key, size_t keyLen, uint8_t 
     if (keyLen > SHA224_BLOCK_SIZE) {
         SHA224_Init(ctx);
         SHA224_Update(ctx, key, keyLen);
-        SHA224_Final(ctx, innerHash);
+        SHA224_Final(ctx, K0);
     }
     else {
         memcpy(K0, key, keyLen);

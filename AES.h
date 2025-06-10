@@ -17,14 +17,12 @@ typedef struct {
     unsigned char* roundKeys; // 라운드 키
 } AES;
 
-void AES_init(AES* aes, unsigned char* mk, uint8_t mk_len);
-void AES_encrypt(AES* aes, unsigned char* ct, const unsigned char* pt);
-void AES_decrypt(AES* aes, unsigned char* pt, const unsigned char* ct);
+void AES_init(AES* ctx, const uint8_t* mk, uint8_t mk_len);
+void AES_encrypt(AES* aes, unsigned char* ct, const unsigned char* pt, size_t blocks);
+void AES_decrypt(AES* aes, unsigned char* pt, const unsigned char* ct, size_t blocks);
 void AES_CheckLength(unsigned int len);
 void AES_free(AES* aes);
 
-void AES_EncKeySetup(AES* aes);
-void AES_DecKeySetup(AES* aes);
 void AES_KeySetup(const unsigned char key[], unsigned char w[], unsigned int Nk, unsigned int Nr);
 static void AES_AddRoundKey(unsigned char state[4][Nb], const unsigned char* rk);
 void AES_SubBytes(unsigned char state[4][Nb]);

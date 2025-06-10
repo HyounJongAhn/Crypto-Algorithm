@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <string>
+
+
 #define MAX_INPUT_SIZE 2048 * 1024
 #define CHUNK_SIZE 1024
 #define AES128 1
@@ -22,7 +24,6 @@
 #define CTR 12
 #define ECB 13
 #define GCM 14
-#define NONE 15
 
 void Decrypt(int OperateModeNum, int BlockCiphernum);
 

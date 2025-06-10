@@ -101,27 +101,20 @@ void AES_XorWords(unsigned char* a, unsigned char* b, unsigned char* c) {
     for (int i = 0;i < 4;++i) c[i] = a[i] ^ b[i];
 }
 
-void AES_init(AES* aes, unsigned char* mk, uint8_t mk_len) {
-    printf("AES_init: key length %u\n", mk_len);
-
+void AES_init(AES* ctx, const uint8_t* mk, uint8_t mk_len)
+{
+    /* key 길이→Nk, Nr 결정 */
     switch (mk_len) {
-    case 16: aes->Nk = 4; aes->Nr = 10; break;
-    case 24: aes->Nk = 6; aes->Nr = 12; break;
-    case 32: aes->Nk = 8; aes->Nr = 14; break;
+    case 16: ctx->Nk = 4;  ctx->Nr = 10; break;
+    case 24: ctx->Nk = 6;  ctx->Nr = 12; break;
+    case 32: ctx->Nk = 8;  ctx->Nr = 14; break;
     default:
         fprintf(stderr, "AES_init: unsupported keylen %u\n", mk_len);
         exit(1);
     }
-    aes->roundKeys = (unsigned char*)malloc(4 * Nb * (aes->Nr + 1));
-    memcpy(aes->key, mk, mk_len);
-}
-
-void AES_EncKeySetup(AES* aes) {
-    AES_KeySetup(aes->key, aes->roundKeys, aes->Nk, aes->Nr);
-}
-
-void AES_DecKeySetup(AES* aes) {
-    AES_KeySetup(aes->key, aes->roundKeys, aes->Nk, aes->Nr);
+    ctx->roundKeys = (unsigned char*)malloc(4 * Nb * (ctx->Nr + 1));
+    memcpy(ctx->key, mk, mk_len);
+    AES_KeySetup(ctx->key, ctx->roundKeys, ctx->Nk, ctx->Nr);   /* 한 번만! */
 }
 
 void AES_KeySetup(const unsigned char key[], unsigned char w[], unsigned int Nk, unsigned int Nr) {
@@ -179,14 +172,16 @@ void AES_REAL_DecryptBlock(const unsigned char* in, unsigned char* out, AES* aes
     for (unsigned i = 0;i < 4;++i)for (unsigned j = 0;j < Nb;++j) out[i + 4 * j] = state[i][j];
 }
 
-void AES_encrypt(AES* aes, unsigned char* ct, const unsigned char* pt) {
-    AES_EncKeySetup(aes);
-    AES_REAL_EncryptBlock(pt, ct, aes);
+void AES_encrypt(AES* aes, unsigned char* ct, const unsigned char* pt, size_t blocks) {
+    for (size_t b = 0; b < blocks; ++b) {
+        AES_REAL_EncryptBlock(pt + 16 * b, ct + 16 * b, aes);
+    }
 }
 
-void AES_decrypt(AES* aes, unsigned char* pt, const unsigned char* ct) {
-    AES_DecKeySetup(aes);
-    AES_REAL_DecryptBlock(ct, pt, aes);
+void AES_decrypt(AES* aes, unsigned char* pt, const unsigned char* ct, size_t blocks) {
+    for (size_t b = 0; b < blocks; ++b) {
+        AES_REAL_DecryptBlock(ct + 16 * b, pt + 16 * b, aes);
+    }
 }
 
 

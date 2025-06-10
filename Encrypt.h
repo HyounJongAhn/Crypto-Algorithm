@@ -5,6 +5,11 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <string>
+
+#include "BlockCipher.h"
+#include "BlockCipherMode.h"
+#include "util.h"
+
 #define MAX_INPUT_SIZE 2048 * 1024
 #define CHUNK_SIZE 1024
 
@@ -22,7 +27,6 @@
 #define CTR 12
 #define ECB 13
 #define GCM 14
-#define NONE 15
 
 void Encrypt(int OperateModeNum, int BlockCiphernum);
 

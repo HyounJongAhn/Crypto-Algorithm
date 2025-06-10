@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
@@ -11,6 +12,12 @@
 #include "ARIA.h"
 #include "Hash.h"
 #include "BlockCipher.h"
+#include "Mac.h"
+#include "PBKDF2.h"
+#include "ctr_drbg.h"
+#include "publickey_crypto.h"
+#include "KCDSA.h"
+#include "DH.h"
 #define _CRT_SECURE_NO_WARNINGS
 //// 알고리즘 불러오기
 
@@ -53,8 +60,12 @@ int main() {
 	while (1) {
 		int Choose_Num = 0;
 		int Hash_Choose_Num = 0;
+		int HMac_Choose_Num = 0;
 		int BlockCipher_Choose_Num = 0;
 		int OperationMode_Choose_Num = 0;
+		int pbkdf_Choose_Num = 0;
+		int rng_Choose_Num = 0;
+		int DigitalSignature_Choose_Num = 0;
 		Information();
 		printf("Input Number : ");
 		if (scanf_s("%d", &Choose_Num) != 1) {
@@ -82,6 +93,8 @@ int main() {
 			break;
 		case(RNG):
 			printf("RNG\n");
+			rng_Choose_Num = ChooseRNGAlgorithm();
+			CTR_DRBG_test();
 			Clear();
 			break;
 		case(HASH):
@@ -92,18 +105,25 @@ int main() {
 			break;
 		case(MAC):
 			printf("MAC\n");
+			HMac_Choose_Num = ChooseHMacAlgorithm();
+			DoHMac((int)HMac_Choose_Num);
 			Clear();
 			break;
 		case(PBKDF):
 			printf("PBKDF\n");
+			pbkdf_Choose_Num = ChoosePBKDFAlgorithm();
+			DoPBKDF((int)pbkdf_Choose_Num);
 			Clear();
 			break;
 		case(KEY_EXCHANGE):
 			printf("Key Exchange\n");
+			DoDH();
 			Clear();
 			break;
 		case(DIGITAL_SIGNATURE):
 			printf("Digital Signature\n");
+			DigitalSignature_Choose_Num = ChooseDigitalSignatureAlgorithm();
+			DoSignature(DigitalSignature_Choose_Num);
 			Clear();
 			break;
 		case(LIST_OF_CIPHER):
